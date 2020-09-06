@@ -1,10 +1,15 @@
 package com.aigui.gmall.user.controller;
 
+import com.aigui.gmall.user.bean.UmsMember;
+import com.aigui.gmall.user.bean.UmsMemberReceiveAddress;
 import com.aigui.gmall.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -16,5 +21,19 @@ public class UserController {
     @ResponseBody
     public String index(){
         return "hello user";
+    }
+
+    @RequestMapping("getAllUser")
+    @ResponseBody
+    public List<UmsMember> getAllUser(){
+        List<UmsMember>umsMembers=iUserService.getAllUser();
+        return umsMembers;
+    }
+
+    @RequestMapping("getReceiveAddressByMemberId")
+    @ResponseBody
+    public List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String memberId){
+        List<UmsMemberReceiveAddress>umsMemberReceiveAddresses=iUserService.getReceiveAddressByMemberId(memberId);
+        return umsMemberReceiveAddresses;
     }
 }
