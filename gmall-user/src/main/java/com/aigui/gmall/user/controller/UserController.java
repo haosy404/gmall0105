@@ -1,11 +1,11 @@
 package com.aigui.gmall.user.controller;
 
-import com.aigui.gmall.user.bean.UmsMember;
-import com.aigui.gmall.user.bean.UmsMemberReceiveAddress;
-import com.aigui.gmall.user.service.IUserService;
+
+import com.atguigu.gmall.bean.UmsMember;
+import com.atguigu.gmall.bean.UmsMemberReceiveAddress;
+import com.atguigu.gmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 

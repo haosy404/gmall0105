@@ -1,10 +1,13 @@
 package com.aigui.gmall.user.service.impl;
 
-import com.aigui.gmall.user.bean.UmsMember;
-import com.aigui.gmall.user.bean.UmsMemberReceiveAddress;
+
+
+
 import com.aigui.gmall.user.mapper.UmsMemberReceiveAddressMapper;
 import com.aigui.gmall.user.mapper.UserMapper;
-import com.aigui.gmall.user.service.IUserService;
+import com.atguigu.gmall.bean.UmsMember;
+import com.atguigu.gmall.bean.UmsMemberReceiveAddress;
+import com.atguigu.gmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
