@@ -26,6 +26,7 @@ public class SpuController {
     @RequestMapping("saveSpuInfo")
     @ResponseBody
     public String saveSpuInfo(@RequestBody PmsProductInfo pmsProductInfo){
+        spuService.saveSpuInfo(pmsProductInfo);
         return "success";
     }
 
