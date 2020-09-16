@@ -20,7 +20,7 @@
             <artifactId>gmall-common-util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        <!--thymeleaf springboot亲儿子-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
