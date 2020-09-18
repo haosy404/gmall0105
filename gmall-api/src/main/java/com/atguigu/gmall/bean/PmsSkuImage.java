@@ -2,6 +2,7 @@ package com.atguigu.gmall.bean;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,8 @@ public class PmsSkuImage implements Serializable {
     String id;
     @Column
     String skuId;
+    @Transient
+    String sku_id;
     @Column
     String imgName;
     @Column
@@ -23,7 +26,13 @@ public class PmsSkuImage implements Serializable {
     String spuImgId;
     @Column
     String isDefault;
+    public String getSku_id() {
+        return sku_id;
+    }
 
+    public void setSku_id(String sku_id) {
+        this.sku_id = sku_id;
+    }
     public String getId() {
         return id;
     }

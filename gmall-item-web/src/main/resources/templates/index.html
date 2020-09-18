@@ -1,11 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"  />
     <!--"UTF-8"后面的 />  / 必须加-->
     <title>Title</title>
 </head>
 <body>
 <h1>hello world</h1>
+<br>
+我是Haosy
+<!--取值-->
+<p th:text="${hello}">大底值</p>
+
+<!--循环-->
+<p th:each="str:${list}">
+    <input th:text="${str}" th:value="${str}" value="111111"/>
+</p>
+
+<!--判断-->
+<p th:if="1==2">我是存在的</p>
+
+<!--其它-->
+<input type="checkbox" th:checked="${checked}=='1'" />
+
+<!--传值给JavaScript-->
+<a href="javascript:a()">点我</a>
+<script language="JavaScript">
+    function a() {
+        alert("js函数被调用");
+    }
+</script>
 </body>
 </html>

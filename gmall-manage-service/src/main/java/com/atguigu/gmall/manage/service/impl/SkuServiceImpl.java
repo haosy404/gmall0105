@@ -53,4 +53,22 @@ public class SkuServiceImpl implements SkuService {
             pmsSkuImageMapper.insertSelective(pmsSkuImage);
         }
     }
+
+    @Override
+    public PmsSkuInfo getSkuById(String skuId) {
+
+        //sku商品对象
+        PmsSkuInfo pmsSkuInfo = new PmsSkuInfo();
+        pmsSkuInfo.setId(skuId);
+        PmsSkuInfo pmsSkuInfo1 = pmsSkuInfoMapper.selectOne(pmsSkuInfo);
+         //sku的图片集合做的有点问题，暂时注释，估计是数据库数据有问题
+        //sku的图片集合
+//        PmsSkuImage pmsSkuImage = new PmsSkuImage();
+//        pmsSkuImage.setSkuId(skuId);
+//        pmsSkuImage.setSku_id(skuId);
+//        List<PmsSkuImage> pmsSkuImages = pmsSkuImageMapper.select(pmsSkuImage);
+//        pmsSkuInfo1.setSkuImageList(pmsSkuImages);
+
+        return pmsSkuInfo1;
+    }
 }
