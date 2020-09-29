@@ -17,6 +17,9 @@
 
 
 
+#gmall-search-service   搜索服务后台 8074
+#gmall-search-web  搜索服务前台 8083
+
 
 
 

@@ -26,6 +26,7 @@ public class ItemController {
 
     @Reference
     SpuService spuService;
+
     @RequestMapping("{skuId}.html")
     public String item(@PathVariable  String skuId,ModelMap modelMap){
         PmsSkuInfo pmsSkuInfo=skuService.getSkuById(skuId);
