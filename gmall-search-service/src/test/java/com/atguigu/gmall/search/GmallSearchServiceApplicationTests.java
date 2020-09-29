@@ -38,50 +38,51 @@ public class GmallSearchServiceApplicationTests {
 
     @Test
     public void contextLoads() throws IOException {
-        //jest的del的工具
-        SearchSourceBuilder searchSourceBuilder=new SearchSourceBuilder();
-
-        //bool
-        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        //term
-        TermQueryBuilder termQueryBuilder1=new TermQueryBuilder("skuAttrValueList.valueId","84");
-        //term
-        TermQueryBuilder termQueryBuilder2=new TermQueryBuilder("skuAttrValueList.valueId","81");
-        //term
-        TermQueryBuilder termQueryBuilder3=new TermQueryBuilder("skuAttrValueList.valueId","43");
-        //fifter
-        boolQueryBuilder.filter(termQueryBuilder1);
-        boolQueryBuilder.filter(termQueryBuilder2);
-        boolQueryBuilder.filter(termQueryBuilder3);
-        //terms
-        TermsQueryBuilder termsQueryBuilder=new TermsQueryBuilder("skuAttrValueList.valueId","48","51","39");
-        boolQueryBuilder.filter(termsQueryBuilder);
-
-        //match
-        MatchQueryBuilder matchQueryBuilder=new MatchQueryBuilder("skuName","诺基亚 NOKIA C3");
-        //must
-        boolQueryBuilder.must(matchQueryBuilder);
-        //query
-        searchSourceBuilder.query(boolQueryBuilder);
-        //from
-        searchSourceBuilder.from(0);
-        //size
-        searchSourceBuilder.size(20);
-        //highlight
-        searchSourceBuilder.highlight(null);
-        String delStr=searchSourceBuilder.toString();
-        System.out.println(delStr);
-        //用API执行复杂查询
-        //new Search.Builder(null).addIndex(null).addType(null).build();
-        Search search = new Search.Builder(delStr).addIndex("gmall0105").addType("PmsSkuInfo").build();
-        SearchResult execute = jestClient.execute(search);
-        List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = execute.getHits(PmsSearchSkuInfo.class);
-        List<PmsSearchSkuInfo>pmsSearchSkuInfos=new ArrayList<>();
-        for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
-           PmsSearchSkuInfo pmsSearchSkuInfo=hit.source;
-           pmsSearchSkuInfos.add(pmsSearchSkuInfo);
-        }
-        System.out.println(pmsSearchSkuInfos.size());
+//        //jest的del的工具
+//        SearchSourceBuilder searchSourceBuilder=new SearchSourceBuilder();
+//
+//        //bool
+//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+//        //term
+//        TermQueryBuilder termQueryBuilder1=new TermQueryBuilder("skuAttrValueList.valueId","84");
+//        //term
+//        TermQueryBuilder termQueryBuilder2=new TermQueryBuilder("skuAttrValueList.valueId","81");
+//        //term
+//        TermQueryBuilder termQueryBuilder3=new TermQueryBuilder("skuAttrValueList.valueId","43");
+//        //fifter
+//        boolQueryBuilder.filter(termQueryBuilder1);
+//        boolQueryBuilder.filter(termQueryBuilder2);
+//        boolQueryBuilder.filter(termQueryBuilder3);
+//        //terms
+//        TermsQueryBuilder termsQueryBuilder=new TermsQueryBuilder("skuAttrValueList.valueId","48","51","39");
+//        boolQueryBuilder.filter(termsQueryBuilder);
+//
+//        //match
+//        MatchQueryBuilder matchQueryBuilder=new MatchQueryBuilder("skuName","诺基亚 NOKIA C3");
+//        //must
+//        boolQueryBuilder.must(matchQueryBuilder);
+//        //query
+//        searchSourceBuilder.query(boolQueryBuilder);
+//        //from
+//        searchSourceBuilder.from(0);
+//        //size
+//        searchSourceBuilder.size(20);
+//        //highlight
+//        searchSourceBuilder.highlight(null);
+//        String delStr=searchSourceBuilder.toString();
+//        System.out.println(delStr);
+//        //用API执行复杂查询
+//        //new Search.Builder(null).addIndex(null).addType(null).build();
+//        Search search = new Search.Builder(delStr).addIndex("gmall0105").addType("PmsSkuInfo").build();
+//        SearchResult execute = jestClient.execute(search);
+//        List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = execute.getHits(PmsSearchSkuInfo.class);
+//        List<PmsSearchSkuInfo>pmsSearchSkuInfos=new ArrayList<>();
+//        for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
+//           PmsSearchSkuInfo pmsSearchSkuInfo=hit.source;
+//           pmsSearchSkuInfos.add(pmsSearchSkuInfo);
+//        }
+//        System.out.println(pmsSearchSkuInfos.size());
+        put();
 
     }
 
@@ -94,11 +95,12 @@ public class GmallSearchServiceApplicationTests {
         for (PmsSkuInfo pmsSkuInfo : pmsSkuInfoList) {
             PmsSearchSkuInfo pmsSearchSkuInfo = new PmsSearchSkuInfo();
             BeanUtils.copyProperties(pmsSkuInfo,pmsSearchSkuInfo);
+            pmsSearchSkuInfo.setId(Long.parseLong(pmsSkuInfo.getId()));
             pmsSearchSkuInfos.add(pmsSearchSkuInfo);
         }
         //导入es
         for (PmsSearchSkuInfo pmsSearchSkuInfo : pmsSearchSkuInfos) {
-            Index put = new Index.Builder(pmsSearchSkuInfo).index("gmall0105").type("PmsSkuInfo").id(pmsSearchSkuInfo.getId()).build();
+            Index put = new Index.Builder(pmsSearchSkuInfo).index("gmall0105").type("PmsSkuInfo").id(pmsSearchSkuInfo.getId()+"").build();
             jestClient.execute(put);
         }
 
