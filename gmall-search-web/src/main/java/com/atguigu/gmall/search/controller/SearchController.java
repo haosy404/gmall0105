@@ -1,10 +1,7 @@
 package com.atguigu.gmall.search.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.atguigu.gmall.bean.PmsBaseAttrInfo;
-import com.atguigu.gmall.bean.PmsSearchParam;
-import com.atguigu.gmall.bean.PmsSearchSkuInfo;
-import com.atguigu.gmall.bean.PmsSkuAttrValue;
+import com.atguigu.gmall.bean.*;
 import com.atguigu.gmall.service.AttrService;
 import com.atguigu.gmall.service.SearchService;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -50,12 +48,24 @@ public class SearchController {
         List<PmsBaseAttrInfo>pmsBaseAttrInfos=attrService.getAttrValueListByValueId(valueIdSet);
         modelMap.put("attrList",pmsBaseAttrInfos);
         //进一步处理，对平台属性进一步处理，去掉当前条件中valueId所在的属性组
-
-
-
-
-
-
+        String[] delValueIds = pmsSearchParam.getValueId();
+        if(delValueIds!=null) {
+            //迭代器，避免初始办法的空指针异常/避免下标越界
+            Iterator<PmsBaseAttrInfo> iterator = pmsBaseAttrInfos.iterator();
+            while (iterator.hasNext()) {
+                PmsBaseAttrInfo pmsBaseAttrInfo = iterator.next();
+                List<PmsBaseAttrValue> attrValueList = pmsBaseAttrInfo.getAttrValueList();
+                for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                    String valueId = pmsBaseAttrValue.getId();
+                    for (String delValueId : delValueIds) {
+                        if (delValueId.equals(valueId)) {
+                            //删除该属性值所在的属性列
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }
         //modelMap.put("urlParam","catalog3Id=61");
         String urlParam=getUrlParam(pmsSearchParam);
         modelMap.put("urlParam",urlParam);
