@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -42,9 +44,12 @@ public class SearchServiceImpl implements SearchService {
         List<PmsSearchSkuInfo>pmsSearchSkuInfos=new ArrayList<>();
         for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
             PmsSearchSkuInfo pmsSearchSkuInfo=hit.source;
-//            Map<String,List<String>>highlight=hit.highlight;
-//            String skuName = highlight.get("skuName").get(0);
-//            pmsSearchSkuInfo.setSkuName(skuName);
+            Map<String,List<String>>highlight=hit.highlight;
+            //必须判断是否为空，因为高亮显示是在搜索框搜索才有的，如果没有搜索，只是点击下面的面包屑的话，会报空指针异常。
+            if(highlight!=null) {
+                String skuName = highlight.get("skuName").get(0);
+                pmsSearchSkuInfo.setSkuName(skuName);
+            }
             pmsSearchSkuInfos.add(pmsSearchSkuInfo);
         }
         System.out.println(pmsSearchSkuInfos.size());
@@ -52,7 +57,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private String getSearchDsl(PmsSearchParam pmsSearchParam) {
-        List<PmsSkuAttrValue> skuAttrValueList = pmsSearchParam.getSkuAttrValueList();
+        String[] skuAttrValueList = pmsSearchParam.getValueId();
         String keyword = pmsSearchParam.getKeyword();
         String catalog3Id = pmsSearchParam.getCatalog3Id();
         //jest的del的工具
@@ -68,9 +73,9 @@ public class SearchServiceImpl implements SearchService {
             boolQueryBuilder.filter(termQueryBuilder);
         }
         if(skuAttrValueList!=null) {
-            for (PmsSkuAttrValue pmsSkuAttrValue : skuAttrValueList) {
+            for (String pmsSkuAttrValue : skuAttrValueList) {
                 //term
-                TermQueryBuilder termQueryBuilder= new TermQueryBuilder("skuAttrValueList.valueId", pmsSkuAttrValue.getValueId());
+                TermQueryBuilder termQueryBuilder= new TermQueryBuilder("skuAttrValueList.valueId", pmsSkuAttrValue);
                 //fifter
                 boolQueryBuilder.filter(termQueryBuilder);
             }
@@ -84,19 +89,22 @@ public class SearchServiceImpl implements SearchService {
         }
         //query
         searchSourceBuilder.query(boolQueryBuilder);
-        //高亮有点问题，放过去。
+        //高亮
         //highlight
-//        HighlightBuilder highlightBuilder=new HighlightBuilder();
-//        highlightBuilder.preTags("<span style='color:red;'>");
-//        highlightBuilder.field("skuName");
-//        highlightBuilder.postTags("</span>");
-//        searchSourceBuilder.highlight(highlightBuilder);
+        HighlightBuilder highlightBuilder=new HighlightBuilder();
+        highlightBuilder.preTags("<span style='color:red;'>");
+        highlightBuilder.field("skuName");
+        highlightBuilder.postTags("</span>");
+        searchSourceBuilder.highlight(highlightBuilder);
         //from
         searchSourceBuilder.from(0);
         //size
         searchSourceBuilder.size(20);
         //sort  排序
         searchSourceBuilder.sort("id",SortOrder.DESC);
+        //聚合 aggs
+        TermsBuilder group_attr= AggregationBuilders.terms("group_attr").field("skuAttrValueList.valueId");
+        searchSourceBuilder.aggregation(group_attr);
         String delStr=searchSourceBuilder.toString();
         return delStr;
     }
