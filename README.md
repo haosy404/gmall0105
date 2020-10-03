@@ -17,10 +17,11 @@
 
 
 
-#gmall-search-service   搜索服务后台 8074
+#gmall-search-service   搜索服务后台 8073
 #gmall-search-web  搜索服务前台 8083
 
-
+#gmall-cart-service   搜索服务后台 8074
+#gmall-cart-web  搜索服务前台 8084
 
 
 
