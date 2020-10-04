@@ -4,26 +4,30 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.bean.OmsCartItem;
 import com.atguigu.gmall.bean.PmsSkuInfo;
+import com.atguigu.gmall.service.CartService;
 import com.atguigu.gmall.service.SkuService;
 import com.atguigu.gmall.util.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.support.TaskUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 //cookie工具类可能有点问题，后续修改
-
 @Controller
 public class CartController {
 
     @Reference
     SkuService skuService;
-    //CartService cartService;
+    @Reference
+    CartService cartService;
 
     @RequestMapping("addToCart")
     public String addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response){
@@ -81,7 +85,24 @@ public class CartController {
             CookieUtil.setCookie(request,response,"cartListCookie", JSON.toJSONString(omsCartItems),60*60*72,true);
         }else {
             //用户登录，采用DB+redis
+            OmsCartItem omsCartItemFormDb=cartService.ifCartExistByUser(memberId,skuId);
 
+            if(omsCartItemFormDb==null){
+                //该用户没有添加过当前商品
+                omsCartItem.setMemberId(memberId);
+                omsCartItem.setMemberNickname("test小郝");
+                omsCartItem.setQuantity(new BigDecimal(quantity));
+                //添加DB
+                cartService.addCart(omsCartItem);
+            }else{
+                //用户添加过当前商品
+                omsCartItemFormDb.setQuantity(omsCartItemFormDb.getQuantity().add(omsCartItem.getQuantity()));
+                //修改DB
+                cartService.updateCart(omsCartItemFormDb);
+            }
+
+            //同步缓存
+            cartService.flushCartCache(memberId);
         }
         //返回重定向,默认不写是转发
         return "redirect:/success.html";
@@ -96,5 +117,28 @@ public class CartController {
             }
         }
         return b;
+    }
+
+    @RequestMapping("cartList")
+    public String cartList(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap) {
+        List<OmsCartItem> omsCartItems = new ArrayList<>();
+        String memberId="1";
+        if(StringUtils.isNotBlank(memberId)){
+            //登录，查询db
+            omsCartItems=cartService.cartList(memberId);
+        }else {
+            //未登录，查询cookie
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            if(StringUtils.isNotBlank(cartListCookie)){
+                omsCartItems = JSON.parseArray(cartListCookie,OmsCartItem.class);
+            }
+        }
+
+        for (OmsCartItem omsCartItem : omsCartItems) {
+            //手动计算一下总价格，商品价格*商品件数
+            omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(omsCartItem.getQuantity()));
+        }
+        modelMap.put("cartList",omsCartItems);
+        return "cartList";
     }
 }
