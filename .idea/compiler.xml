@@ -7,15 +7,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gmall-web-util" />
-        <module name="gmall-search-service" />
         <module name="gmall-common-util" />
         <module name="gmall-manage-web" />
+        <module name="gmall-manage-service" />
         <module name="gmall-cart-service" />
         <module name="gmall-api" />
-        <module name="gmall-manage-service" />
-        <module name="gmall-user-service" />
         <module name="gmall-service-util" />
         <module name="gmall-cart-web" />
+        <module name="gmall-user-service" />
+        <module name="gmall-passport-web" />
+        <module name="gmall-search-service" />
         <module name="gmall-user-web" />
         <module name="gmall-search-web" />
         <module name="gmall-user" />
@@ -31,6 +32,7 @@
       <module name="gmall-manage-service" target="1.8" />
       <module name="gmall-manage-web" target="1.8" />
       <module name="gmall-parent" target="1.8" />
+      <module name="gmall-passport-web" target="1.8" />
       <module name="gmall-search-service" target="1.8" />
       <module name="gmall-search-web" target="1.8" />
       <module name="gmall-service-util" target="1.8" />
@@ -48,6 +50,7 @@
       <module name="gmall-item-web" options="" />
       <module name="gmall-manage-service" options="" />
       <module name="gmall-manage-web" options="" />
+      <module name="gmall-passport-web" options="" />
       <module name="gmall-search-web" options="" />
       <module name="gmall-user" options="" />
       <module name="gmall-user-service" options="" />

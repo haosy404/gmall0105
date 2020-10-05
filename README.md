@@ -24,7 +24,8 @@
 #gmall-cart-web  购物车服务前台 8084
 
 
-
+#gamll-passport-web 用户认证中心 8085
+#gmall-user-service用户服务的service层  8070
 
 
 
